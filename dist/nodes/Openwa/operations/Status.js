@@ -28,6 +28,12 @@ exports.statusFields = [
                 action: 'Get my status array',
             },
             {
+                name: 'Get Snapshot',
+                value: 'getSnapshot',
+                description: 'Get a snapshot of the main chat or a specific chat',
+                action: 'Get snapshot',
+            },
+            {
                 name: 'Get Status',
                 value: 'getStatus',
                 description: 'Get a specific status',
@@ -95,6 +101,20 @@ exports.statusFields = [
         },
         description: 'URL of the video to post as status',
         placeholder: 'https://example.com/video.mp4',
+    },
+    {
+        displayName: 'Chat ID',
+        name: 'chatId',
+        type: 'string',
+        default: '',
+        displayOptions: {
+            show: {
+                resource: ['status'],
+                operation: ['getSnapshot'],
+            },
+        },
+        description: 'Chat ID to get snapshot from (leave empty to get main page snapshot)',
+        placeholder: 'chat_id_123@c.us',
     },
     {
         displayName: 'Status ID',
@@ -183,6 +203,21 @@ async function statusOperations(operation, itemIndex) {
                 headers,
                 json: true,
                 body: { args: { statusId } },
+            });
+            return response;
+        }
+        case 'getSnapshot': {
+            const chatId = this.getNodeParameter('chatId', itemIndex);
+            const args = {};
+            if (chatId) {
+                args.chatId = chatId;
+            }
+            const response = await this.helpers.httpRequest({
+                method: 'POST',
+                url: `${baseUrl}/getSnapshot`,
+                headers,
+                json: true,
+                body: { args },
             });
             return response;
         }
