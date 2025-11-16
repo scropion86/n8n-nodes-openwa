@@ -178,10 +178,38 @@ export const messageFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['message'],
-				operation: ['deleteMessage', 'react', 'getMessageInfo', 'editMessage', 'reply'],
+				operation: ['deleteMessage', 'react', 'getMessageInfo', 'editMessage'],
 			},
 		},
 		description: 'The message ID to interact with',
+	},
+	{
+		displayName: 'Quoted Message ID',
+		name: 'quotedMsgId',
+		type: 'string',
+		required: true,
+		default: '',
+		displayOptions: {
+			show: {
+				resource: ['message'],
+				operation: ['reply'],
+			},
+		},
+		description: 'The message ID to reply to (quoted message ID)',
+		placeholder: 'false_447123456789@c.us_9C4D0965EA5C09D591334AB6BDB07FEB',
+	},
+	{
+		displayName: 'Send Seen',
+		name: 'sendSeen',
+		type: 'boolean',
+		default: false,
+		displayOptions: {
+			show: {
+				resource: ['message'],
+				operation: ['reply'],
+			},
+		},
+		description: 'Whether to send a read receipt',
 	},
 	{
 		displayName: 'Emoji',
@@ -328,8 +356,9 @@ export async function messageOperations(
 
 		case 'reply': {
 			const chatId = this.getNodeParameter('chatId', itemIndex) as string;
-			const messageId = this.getNodeParameter('messageId', itemIndex) as string;
+			const quotedMsgId = this.getNodeParameter('quotedMsgId', itemIndex) as string;
 			const message = this.getNodeParameter('message', itemIndex) as string;
+			const sendSeen = this.getNodeParameter('sendSeen', itemIndex) as boolean;
 
 			const response = await this.helpers.httpRequest({
 				method: 'POST',
@@ -338,8 +367,9 @@ export async function messageOperations(
 				json: true,
 				body: { args: {
 					to: chatId,
-					id: messageId,
 					content: message,
+					quotedMsgId,
+					sendSeen,
 				} },
 			});
 

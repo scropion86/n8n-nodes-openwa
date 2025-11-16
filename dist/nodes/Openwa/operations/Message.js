@@ -178,10 +178,38 @@ exports.messageFields = [
         displayOptions: {
             show: {
                 resource: ['message'],
-                operation: ['deleteMessage', 'react', 'getMessageInfo', 'editMessage', 'reply'],
+                operation: ['deleteMessage', 'react', 'getMessageInfo', 'editMessage'],
             },
         },
         description: 'The message ID to interact with',
+    },
+    {
+        displayName: 'Quoted Message ID',
+        name: 'quotedMsgId',
+        type: 'string',
+        required: true,
+        default: '',
+        displayOptions: {
+            show: {
+                resource: ['message'],
+                operation: ['reply'],
+            },
+        },
+        description: 'The message ID to reply to (quoted message ID)',
+        placeholder: 'false_447123456789@c.us_9C4D0965EA5C09D591334AB6BDB07FEB',
+    },
+    {
+        displayName: 'Send Seen',
+        name: 'sendSeen',
+        type: 'boolean',
+        default: false,
+        displayOptions: {
+            show: {
+                resource: ['message'],
+                operation: ['reply'],
+            },
+        },
+        description: 'Whether to send a read receipt',
     },
     {
         displayName: 'Emoji',
@@ -306,8 +334,9 @@ async function messageOperations(operation, itemIndex) {
         }
         case 'reply': {
             const chatId = this.getNodeParameter('chatId', itemIndex);
-            const messageId = this.getNodeParameter('messageId', itemIndex);
+            const quotedMsgId = this.getNodeParameter('quotedMsgId', itemIndex);
             const message = this.getNodeParameter('message', itemIndex);
+            const sendSeen = this.getNodeParameter('sendSeen', itemIndex);
             const response = await this.helpers.httpRequest({
                 method: 'POST',
                 url: `${baseUrl}/reply`,
@@ -315,8 +344,9 @@ async function messageOperations(operation, itemIndex) {
                 json: true,
                 body: { args: {
                         to: chatId,
-                        id: messageId,
                         content: message,
+                        quotedMsgId,
+                        sendSeen,
                     } },
             });
             return response;
