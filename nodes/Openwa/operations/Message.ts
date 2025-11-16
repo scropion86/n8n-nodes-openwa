@@ -14,6 +14,12 @@ export const messageFields: INodeProperties[] = [
 		},
 		options: [
 			{
+				name: 'Decrypt Media',
+				value: 'decryptMedia',
+				description: 'Decrypt a media message',
+				action: 'Decrypt media',
+			},
+			{
 				name: 'Delete Message',
 				value: 'deleteMessage',
 				description: 'Delete a message',
@@ -106,6 +112,20 @@ export const messageFields: INodeProperties[] = [
 		},
 		description: 'The message text to send',
 		typeOptions: { rows: 3 },
+	},
+	{
+		displayName: 'Message To Decrypt',
+		name: 'messageSerialized',
+		type: 'string',
+		default: '',
+		displayOptions: {
+			show: {
+				resource: ['message'],
+				operation: ['decryptMedia'],
+			},
+		},
+		description: 'Serialized MessageId or Message object to decrypt',
+		placeholder: 'message_id_or_serialized_message',
 	},
 	{
 		displayName: 'File URL',
@@ -388,6 +408,67 @@ export async function messageOperations(
 			});
 
 			return response;
+		}
+
+		case 'decryptMedia': {
+			const messageSerialized = this.getNodeParameter('messageSerialized', itemIndex) as string;
+
+			const args: Record<string, unknown> = {};
+			if (messageSerialized) {
+				// pass the serialized message id or the whole message object string
+				args.message = messageSerialized;
+			}
+
+			const response = await this.helpers.httpRequest({
+				method: 'POST',
+				url: `${baseUrl}/decryptMedia`,
+				headers,
+				json: true,
+				body: { args },
+			});
+
+			// response is expected to contain a DataURL, e.g. "data:image/png;base64,..."
+			const responseTyped = response as Record<string, unknown> | string | null;
+			let dataUrl: string | undefined;
+			if (responseTyped && typeof responseTyped === 'object' && 'response' in responseTyped) {
+				dataUrl = responseTyped['response'] as string;
+			} else if (typeof responseTyped === 'string') {
+				dataUrl = responseTyped;
+			} else if (responseTyped && typeof responseTyped === 'object') {
+				// fallback: try to stringify
+				dataUrl = JSON.stringify(responseTyped);
+			}
+
+			const dataUrlStr = dataUrl || '';
+			const commaIndex = dataUrlStr.indexOf(',');
+			const base64 = commaIndex !== -1 ? dataUrlStr.slice(commaIndex + 1) : dataUrlStr;
+			const mimeMatch = dataUrlStr.match(/^data:([^;]+);base64,/);
+			const mimeType = mimeMatch ? mimeMatch[1] : 'application/octet-stream';
+			const fileName = 'snapshot.png';
+
+			// Determine success value if available in response
+			const successValue =
+				responseTyped && typeof responseTyped === 'object' && 'success' in responseTyped
+					? Boolean(responseTyped['success'])
+					: true;
+
+			// Return both JSON (with DataURL & base64) and a binary property containing the base64 data
+			const item = {
+				json: {
+					success: successValue,
+					dataUrl: dataUrlStr,
+					base64,
+				},
+				binary: {
+					file: {
+						data: base64,
+						fileName,
+						mimeType,
+					},
+				},
+			};
+
+			return [item];
 		}
 
 		default:

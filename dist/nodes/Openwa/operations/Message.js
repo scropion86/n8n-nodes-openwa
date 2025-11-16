@@ -16,6 +16,12 @@ exports.messageFields = [
         },
         options: [
             {
+                name: 'Decrypt Media',
+                value: 'decryptMedia',
+                description: 'Decrypt a media message',
+                action: 'Decrypt media',
+            },
+            {
                 name: 'Delete Message',
                 value: 'deleteMessage',
                 description: 'Delete a message',
@@ -107,6 +113,20 @@ exports.messageFields = [
         },
         description: 'The message text to send',
         typeOptions: { rows: 3 },
+    },
+    {
+        displayName: 'Message To Decrypt',
+        name: 'messageSerialized',
+        type: 'string',
+        default: '',
+        displayOptions: {
+            show: {
+                resource: ['message'],
+                operation: ['decryptMedia'],
+            },
+        },
+        description: 'Serialized MessageId or Message object to decrypt',
+        placeholder: 'message_id_or_serialized_message',
     },
     {
         displayName: 'File URL',
@@ -352,6 +372,55 @@ async function messageOperations(operation, itemIndex) {
                 body: { args: { id: messageId } },
             });
             return response;
+        }
+        case 'decryptMedia': {
+            const messageSerialized = this.getNodeParameter('messageSerialized', itemIndex);
+            const args = {};
+            if (messageSerialized) {
+                args.message = messageSerialized;
+            }
+            const response = await this.helpers.httpRequest({
+                method: 'POST',
+                url: `${baseUrl}/decryptMedia`,
+                headers,
+                json: true,
+                body: { args },
+            });
+            const responseTyped = response;
+            let dataUrl;
+            if (responseTyped && typeof responseTyped === 'object' && 'response' in responseTyped) {
+                dataUrl = responseTyped['response'];
+            }
+            else if (typeof responseTyped === 'string') {
+                dataUrl = responseTyped;
+            }
+            else if (responseTyped && typeof responseTyped === 'object') {
+                dataUrl = JSON.stringify(responseTyped);
+            }
+            const dataUrlStr = dataUrl || '';
+            const commaIndex = dataUrlStr.indexOf(',');
+            const base64 = commaIndex !== -1 ? dataUrlStr.slice(commaIndex + 1) : dataUrlStr;
+            const mimeMatch = dataUrlStr.match(/^data:([^;]+);base64,/);
+            const mimeType = mimeMatch ? mimeMatch[1] : 'application/octet-stream';
+            const fileName = 'snapshot.png';
+            const successValue = responseTyped && typeof responseTyped === 'object' && 'success' in responseTyped
+                ? Boolean(responseTyped['success'])
+                : true;
+            const item = {
+                json: {
+                    success: successValue,
+                    dataUrl: dataUrlStr,
+                    base64,
+                },
+                binary: {
+                    file: {
+                        data: base64,
+                        fileName,
+                        mimeType,
+                    },
+                },
+            };
+            return [item];
         }
         default:
             throw new n8n_workflow_1.NodeOperationError(this.getNode(), `Unknown operation: ${operation}`);
