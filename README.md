@@ -2,6 +2,14 @@
 
 This repository provides an n8n community node that integrates with the Openwa (wa-automate) WhatsApp API.
 
+
+
+
+# how to install it into self hosted N8N
+
+<img width="1375" height="757" alt="image" src="https://github.com/user-attachments/assets/cc29f6a0-f7ea-4adc-9834-a7632e2d5654" />
+
+
 Small overview
 
 *   Purpose: let n8n users send messages and manage chats, groups, contacts, statuses and webhooks via an Openwa instance.
