@@ -39,6 +39,12 @@ exports.chatFields = [
                 action: 'Get all chats',
             },
             {
+                name: 'Get All Messages In Chat',
+                value: 'getAllMessagesInChat',
+                description: 'Get all messages in a chat',
+                action: 'Get all messages in chat',
+            },
+            {
                 name: 'Get Chat',
                 value: 'getChat',
                 description: 'Get a specific chat',
@@ -85,7 +91,7 @@ exports.chatFields = [
         displayOptions: {
             show: {
                 resource: ['chat'],
-                operation: ['getChat', 'archiveChat', 'deleteChat', 'muteChat', 'unmuteChat', 'pinChat', 'clearChat'],
+                operation: ['getChat', 'archiveChat', 'deleteChat', 'muteChat', 'unmuteChat', 'pinChat', 'clearChat', 'getAllMessagesInChat'],
             },
         },
         placeholder: '1234567890@c.us',
@@ -209,6 +215,17 @@ async function chatOperations(operation, itemIndex) {
             const response = await this.helpers.httpRequest({
                 method: 'POST',
                 url: `${baseUrl}/clearChat`,
+                headers,
+                json: true,
+                body: { args: { chatId } },
+            });
+            return response;
+        }
+        case 'getAllMessagesInChat': {
+            const chatId = this.getNodeParameter('chatId', itemIndex);
+            const response = await this.helpers.httpRequest({
+                method: 'POST',
+                url: `${baseUrl}/getAllMessagesInChat`,
                 headers,
                 json: true,
                 body: { args: { chatId } },
