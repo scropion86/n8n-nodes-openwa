@@ -124,16 +124,10 @@ case 'sendLocation': {
   const latitude = this.getNodeParameter('latitude', itemIndex) as number;
   const longitude = this.getNodeParameter('longitude', itemIndex) as number;
 
-  const response = await this.helpers.httpRequest({
-    method: 'POST',
-    url: `${baseUrl}/sendLocation`,
-    headers,
-    json: true,
-    body: { args: { 
-      to: chatId,  // Map 'chatId' to 'to' (as required by API)
-      latitude,
-      longitude,
-    } },
+  const response = await openwaApiRequest.call(this, 'POST', '/sendLocation', {
+    to: chatId,  // Map 'chatId' to 'to' (as required by API)
+    latitude,
+    longitude,
   });
 
   return response;
@@ -192,7 +186,8 @@ nodes/Openwa/operations/
 ├── Group.ts        ← group operations
 ├── Contact.ts      ← contact operations
 ├── Status.ts       ← status and snapshot operations
-└── Webhook.ts      ← webhook operations
+├── Webhook.ts      ← webhook operations
+└── ../transport/ApiRequest.ts ← centralized API request helper
 ```
 
 Each file exports:

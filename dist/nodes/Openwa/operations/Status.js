@@ -130,80 +130,44 @@ exports.statusFields = [
         placeholder: 'status_id_123',
     },
 ];
+const ApiRequest_1 = require("../transport/ApiRequest");
 async function statusOperations(operation, itemIndex) {
-    const credentials = await this.getCredentials('openwaApi');
-    const baseUrl = credentials.apiBaseUrl.replace(/\/$/, '');
-    const apiKey = credentials.apiKey;
-    const headers = {
-        api_key: apiKey,
-        'Content-Type': 'application/json',
-    };
     switch (operation) {
         case 'postTextStatus': {
             const statusText = this.getNodeParameter('statusText', itemIndex);
-            const response = await this.helpers.httpRequest({
-                method: 'POST',
-                url: `${baseUrl}/postTextStatus`,
-                headers,
-                json: true,
-                body: { args: {
-                        text: statusText,
-                    } },
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/postTextStatus', {
+                text: statusText,
             });
+            return response;
             return response;
         }
         case 'postImageStatus': {
             const imageUrl = this.getNodeParameter('imageUrl', itemIndex);
-            const response = await this.helpers.httpRequest({
-                method: 'POST',
-                url: `${baseUrl}/postImageStatus`,
-                headers,
-                json: true,
-                body: { args: { imageUrl } },
-            });
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/postImageStatus', { imageUrl });
+            return response;
             return response;
         }
         case 'postVideoStatus': {
             const videoUrl = this.getNodeParameter('videoUrl', itemIndex);
-            const response = await this.helpers.httpRequest({
-                method: 'POST',
-                url: `${baseUrl}/postVideoStatus`,
-                headers,
-                json: true,
-                body: { args: { videoUrl } },
-            });
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/postVideoStatus', { videoUrl });
+            return response;
             return response;
         }
         case 'getMyStatusArray': {
-            const response = await this.helpers.httpRequest({
-                method: 'POST',
-                url: `${baseUrl}/getMyStatusArray`,
-                headers,
-                json: true,
-                body: { args: {} },
-            });
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/getMyStatusArray');
+            return response;
             return response;
         }
         case 'deleteStatus': {
             const statusId = this.getNodeParameter('statusId', itemIndex);
-            const response = await this.helpers.httpRequest({
-                method: 'POST',
-                url: `${baseUrl}/deleteStatus`,
-                headers,
-                json: true,
-                body: { args: { statusId } },
-            });
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/deleteStatus', { statusId });
+            return response;
             return response;
         }
         case 'getStatus': {
             const statusId = this.getNodeParameter('statusId', itemIndex);
-            const response = await this.helpers.httpRequest({
-                method: 'POST',
-                url: `${baseUrl}/getStatus`,
-                headers,
-                json: true,
-                body: { args: { statusId } },
-            });
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/getStatus', { statusId });
+            return response;
             return response;
         }
         case 'getSnapshot': {
@@ -212,13 +176,8 @@ async function statusOperations(operation, itemIndex) {
             if (chatId) {
                 args.chatId = chatId;
             }
-            const response = await this.helpers.httpRequest({
-                method: 'POST',
-                url: `${baseUrl}/getSnapshot`,
-                headers,
-                json: true,
-                body: { args },
-            });
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/getSnapshot', args);
+            return response;
             return response;
         }
         default:

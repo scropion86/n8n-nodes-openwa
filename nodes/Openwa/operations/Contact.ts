@@ -67,29 +67,19 @@ export const contactFields: INodeProperties[] = [
 	},
 ];
 
+import { openwaApiRequest } from '../transport/ApiRequest';
+
 export async function contactOperations(
 	this: IExecuteFunctions,
 	operation: string,
 	itemIndex: number,
 ): Promise<unknown> {
-	const credentials = await this.getCredentials('openwaApi');
-	const baseUrl = (credentials.apiBaseUrl as string).replace(/\/$/, '');
-	const apiKey = credentials.apiKey as string;
-
-	const headers = {
-		api_key: apiKey,
-		'Content-Type': 'application/json',
-	};
 
 	switch (operation) {
 		case 'getAllContacts': {
-			const response = await this.helpers.httpRequest({
-				method: 'POST',
-				url: `${baseUrl}/getAllContacts`,
-				headers,
-				json: true,
-				body: { args: {} },
-			});
+			const response = await openwaApiRequest.call(this, 'POST', '/getAllContacts');
+
+			return response;
 
 			return response;
 		}
@@ -97,13 +87,9 @@ export async function contactOperations(
 		case 'getContact': {
 			const contactId = this.getNodeParameter('contactId', itemIndex) as string;
 
-			const response = await this.helpers.httpRequest({
-				method: 'POST',
-				url: `${baseUrl}/getContact`,
-				headers,
-				json: true,
-				body: { args: { contactId } },
-			});
+			const response = await openwaApiRequest.call(this, 'POST', '/getContact', { contactId });
+
+			return response;
 
 			return response;
 		}
@@ -111,13 +97,9 @@ export async function contactOperations(
 		case 'contactBlock': {
 			const contactId = this.getNodeParameter('contactId', itemIndex) as string;
 
-			const response = await this.helpers.httpRequest({
-				method: 'POST',
-				url: `${baseUrl}/contactBlock`,
-				headers,
-				json: true,
-				body: { args: { contactId } },
-			});
+			const response = await openwaApiRequest.call(this, 'POST', '/contactBlock', { contactId });
+
+			return response;
 
 			return response;
 		}
@@ -125,13 +107,9 @@ export async function contactOperations(
 		case 'contactUnblock': {
 			const contactId = this.getNodeParameter('contactId', itemIndex) as string;
 
-			const response = await this.helpers.httpRequest({
-				method: 'POST',
-				url: `${baseUrl}/contactUnblock`,
-				headers,
-				json: true,
-				body: { args: { contactId } },
-			});
+			const response = await openwaApiRequest.call(this, 'POST', '/contactUnblock', { contactId });
+
+			return response;
 
 			return response;
 		}
@@ -139,13 +117,9 @@ export async function contactOperations(
 		case 'checkNumberStatus': {
 			const contactId = this.getNodeParameter('contactId', itemIndex) as string;
 
-			const response = await this.helpers.httpRequest({
-				method: 'POST',
-				url: `${baseUrl}/checkNumberStatus`,
-				headers,
-				json: true,
-				body: { args: { contactId } },
-			});
+			const response = await openwaApiRequest.call(this, 'POST', '/checkNumberStatus', { contactId });
+
+			return response;
 
 			return response;
 		}
@@ -153,13 +127,9 @@ export async function contactOperations(
 		case 'getBusinessProfile': {
 			const contactId = this.getNodeParameter('contactId', itemIndex) as string;
 
-			const response = await this.helpers.httpRequest({
-				method: 'POST',
-				url: `${baseUrl}/getBusinessProfile`,
-				headers,
-				json: true,
-				body: { args: { contactId } },
-			});
+			const response = await openwaApiRequest.call(this, 'POST', '/getBusinessProfile', { contactId });
+
+			return response;
 
 			return response;
 		}

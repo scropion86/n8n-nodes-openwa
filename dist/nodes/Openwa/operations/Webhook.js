@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.webhookFields = void 0;
 exports.webhookOperations = webhookOperations;
 const n8n_workflow_1 = require("n8n-workflow");
+const ApiRequest_1 = require("../transport/ApiRequest");
 exports.webhookFields = [
     {
         displayName: 'Operation',
@@ -59,16 +60,125 @@ exports.webhookFields = [
     {
         displayName: 'Webhook Events',
         name: 'webhookEvents',
-        type: 'string',
-        default: '',
+        type: 'multiOptions',
+        default: [],
         displayOptions: {
             show: {
                 resource: ['webhook'],
                 operation: ['registerWebhook', 'updateWebhook'],
             },
         },
-        description: 'Comma-separated list of events to listen for',
-        placeholder: 'message,status,group_join',
+        description: 'Events to listen for',
+        options: [
+            {
+                name: 'Acknowledgement',
+                value: 'onAck',
+            },
+            {
+                name: 'Add To Group',
+                value: 'onAddedToGroup',
+            },
+            {
+                name: 'Any Message',
+                value: 'onAnyMessage',
+            },
+            {
+                name: 'Battery',
+                value: 'onBattery',
+            },
+            {
+                name: 'Broadcast',
+                value: 'onBroadcast',
+            },
+            {
+                name: 'Button',
+                value: 'onButton',
+            },
+            {
+                name: 'Call State',
+                value: 'onCallState',
+            },
+            {
+                name: 'Chat Deleted',
+                value: 'onChatDeleted',
+            },
+            {
+                name: 'Chat Opened',
+                value: 'onChatOpened',
+            },
+            {
+                name: 'Chat State',
+                value: 'onChatState',
+            },
+            {
+                name: 'Contact Added',
+                value: 'onContactAdded',
+            },
+            {
+                name: 'Global Participants Changed',
+                value: 'onGlobalParticipantsChanged',
+            },
+            {
+                name: 'Group Approval Request',
+                value: 'onGroupApprovalRequest',
+            },
+            {
+                name: 'Group Change',
+                value: 'onGroupChange',
+            },
+            {
+                name: 'Incoming Call',
+                value: 'onIncomingCall',
+            },
+            {
+                name: 'Label',
+                value: 'onLabel',
+            },
+            {
+                name: 'Logout',
+                value: 'onLogout',
+            },
+            {
+                name: 'Message',
+                value: 'onMessage',
+            },
+            {
+                name: 'Message Deleted',
+                value: 'onMessageDeleted',
+            },
+            {
+                name: 'New Product',
+                value: 'onNewProduct',
+            },
+            {
+                name: 'Order',
+                value: 'onOrder',
+            },
+            {
+                name: 'Plugged',
+                value: 'onPlugged',
+            },
+            {
+                name: 'Poll Vote',
+                value: 'onPollVote',
+            },
+            {
+                name: 'Reaction',
+                value: 'onReaction',
+            },
+            {
+                name: 'Removed From Group',
+                value: 'onRemovedFromGroup',
+            },
+            {
+                name: 'State Changed',
+                value: 'onStateChanged',
+            },
+            {
+                name: 'Story',
+                value: 'onStory',
+            },
+        ],
     },
     {
         displayName: 'Webhook ID',
@@ -85,67 +195,34 @@ exports.webhookFields = [
     },
 ];
 async function webhookOperations(operation, itemIndex) {
-    const credentials = await this.getCredentials('openwaApi');
-    const baseUrl = credentials.apiBaseUrl.replace(/\/$/, '');
-    const apiKey = credentials.apiKey;
-    const headers = {
-        api_key: apiKey,
-        'Content-Type': 'application/json',
-    };
     switch (operation) {
         case 'registerWebhook': {
             const webhookUrl = this.getNodeParameter('webhookUrl', itemIndex);
-            const webhookEvents = this.getNodeParameter('webhookEvents', itemIndex);
-            const events = webhookEvents.split(',').map((e) => e.trim());
-            const response = await this.helpers.httpRequest({
-                method: 'POST',
-                url: `${baseUrl}/registerWebhook`,
-                headers,
-                json: true,
-                body: { args: {
-                        url: webhookUrl,
-                        events,
-                    } },
+            const events = this.getNodeParameter('webhookEvents', itemIndex);
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/registerWebhook', {
+                url: webhookUrl,
+                events,
             });
             return response;
         }
         case 'listWebhooks': {
-            const response = await this.helpers.httpRequest({
-                method: 'POST',
-                url: `${baseUrl}/listWebhooks`,
-                headers,
-                json: true,
-                body: { args: {} },
-            });
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/listWebhooks');
             return response;
         }
         case 'updateWebhook': {
             const webhookId = this.getNodeParameter('webhookId', itemIndex);
             const webhookUrl = this.getNodeParameter('webhookUrl', itemIndex);
-            const webhookEvents = this.getNodeParameter('webhookEvents', itemIndex);
-            const events = webhookEvents.split(',').map((e) => e.trim());
-            const response = await this.helpers.httpRequest({
-                method: 'POST',
-                url: `${baseUrl}/updateWebhook`,
-                headers,
-                json: true,
-                body: { args: {
-                        webhookId,
-                        url: webhookUrl,
-                        events,
-                    } },
+            const events = this.getNodeParameter('webhookEvents', itemIndex);
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/updateWebhook', {
+                webhookId,
+                url: webhookUrl,
+                events,
             });
             return response;
         }
         case 'removeWebhook': {
             const webhookId = this.getNodeParameter('webhookId', itemIndex);
-            const response = await this.helpers.httpRequest({
-                method: 'POST',
-                url: `${baseUrl}/removeWebhook`,
-                headers,
-                json: true,
-                body: { args: { webhookId } },
-            });
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/removeWebhook', { webhookId });
             return response;
         }
         default:

@@ -242,27 +242,15 @@ exports.messageFields = [
         typeOptions: { rows: 3 },
     },
 ];
+const ApiRequest_1 = require("../transport/ApiRequest");
 async function messageOperations(operation, itemIndex) {
-    const credentials = await this.getCredentials('openwaApi');
-    const baseUrl = credentials.apiBaseUrl.replace(/\/$/, '');
-    const apiKey = credentials.apiKey;
-    const headers = {
-        api_key: apiKey,
-        'Content-Type': 'application/json',
-    };
     switch (operation) {
         case 'sendText': {
             const chatId = this.getNodeParameter('chatId', itemIndex);
             const message = this.getNodeParameter('message', itemIndex);
-            const response = await this.helpers.httpRequest({
-                method: 'POST',
-                url: `${baseUrl}/sendText`,
-                headers,
-                json: true,
-                body: { args: {
-                        to: chatId,
-                        content: message,
-                    } },
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/sendText', {
+                to: chatId,
+                content: message,
             });
             return response;
         }
@@ -270,31 +258,19 @@ async function messageOperations(operation, itemIndex) {
             const chatId = this.getNodeParameter('chatId', itemIndex);
             const fileUrl = this.getNodeParameter('fileUrl', itemIndex);
             const caption = this.getNodeParameter('caption', itemIndex);
-            const response = await this.helpers.httpRequest({
-                method: 'POST',
-                url: `${baseUrl}/sendImage`,
-                headers,
-                json: true,
-                body: { args: {
-                        to: chatId,
-                        file: fileUrl,
-                        caption: caption || '',
-                    } },
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/sendImage', {
+                to: chatId,
+                file: fileUrl,
+                caption: caption || '',
             });
             return response;
         }
         case 'sendAudio': {
             const chatId = this.getNodeParameter('chatId', itemIndex);
             const fileUrl = this.getNodeParameter('fileUrl', itemIndex);
-            const response = await this.helpers.httpRequest({
-                method: 'POST',
-                url: `${baseUrl}/sendAudio`,
-                headers,
-                json: true,
-                body: { args: {
-                        to: chatId,
-                        file: fileUrl,
-                    } },
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/sendAudio', {
+                to: chatId,
+                file: fileUrl,
             });
             return response;
         }
@@ -302,16 +278,10 @@ async function messageOperations(operation, itemIndex) {
             const chatId = this.getNodeParameter('chatId', itemIndex);
             const fileUrl = this.getNodeParameter('fileUrl', itemIndex);
             const fileName = this.getNodeParameter('fileName', itemIndex);
-            const response = await this.helpers.httpRequest({
-                method: 'POST',
-                url: `${baseUrl}/sendFile`,
-                headers,
-                json: true,
-                body: { args: {
-                        to: chatId,
-                        file: fileUrl,
-                        filename: fileName || 'file',
-                    } },
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/sendFile', {
+                to: chatId,
+                file: fileUrl,
+                filename: fileName || 'file',
             });
             return response;
         }
@@ -319,16 +289,10 @@ async function messageOperations(operation, itemIndex) {
             const chatId = this.getNodeParameter('chatId', itemIndex);
             const fileUrl = this.getNodeParameter('fileUrl', itemIndex);
             const caption = this.getNodeParameter('caption', itemIndex);
-            const response = await this.helpers.httpRequest({
-                method: 'POST',
-                url: `${baseUrl}/sendVideoAsGif`,
-                headers,
-                json: true,
-                body: { args: {
-                        to: chatId,
-                        file: fileUrl,
-                        caption: caption || '',
-                    } },
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/sendVideoAsGif', {
+                to: chatId,
+                file: fileUrl,
+                caption: caption || '',
             });
             return response;
         }
@@ -337,70 +301,40 @@ async function messageOperations(operation, itemIndex) {
             const quotedMsgId = this.getNodeParameter('quotedMsgId', itemIndex);
             const message = this.getNodeParameter('message', itemIndex);
             const sendSeen = this.getNodeParameter('sendSeen', itemIndex);
-            const response = await this.helpers.httpRequest({
-                method: 'POST',
-                url: `${baseUrl}/reply`,
-                headers,
-                json: true,
-                body: { args: {
-                        to: chatId,
-                        content: message,
-                        quotedMsgId,
-                        sendSeen,
-                    } },
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/reply', {
+                to: chatId,
+                content: message,
+                quotedMsgId,
+                sendSeen,
             });
             return response;
         }
         case 'deleteMessage': {
             const messageId = this.getNodeParameter('messageId', itemIndex);
-            const response = await this.helpers.httpRequest({
-                method: 'POST',
-                url: `${baseUrl}/deleteMessage`,
-                headers,
-                json: true,
-                body: { args: { id: messageId } },
-            });
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/deleteMessage', { id: messageId });
             return response;
         }
         case 'editMessage': {
             const messageId = this.getNodeParameter('messageId', itemIndex);
             const editText = this.getNodeParameter('editText', itemIndex);
-            const response = await this.helpers.httpRequest({
-                method: 'POST',
-                url: `${baseUrl}/editMessage`,
-                headers,
-                json: true,
-                body: { args: {
-                        id: messageId,
-                        newText: editText,
-                    } },
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/editMessage', {
+                id: messageId,
+                newText: editText,
             });
             return response;
         }
         case 'react': {
             const messageId = this.getNodeParameter('messageId', itemIndex);
             const emoji = this.getNodeParameter('emoji', itemIndex);
-            const response = await this.helpers.httpRequest({
-                method: 'POST',
-                url: `${baseUrl}/react`,
-                headers,
-                json: true,
-                body: { args: {
-                        id: messageId,
-                        emoji,
-                    } },
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/react', {
+                id: messageId,
+                emoji,
             });
             return response;
         }
         case 'getMessageInfo': {
             const messageId = this.getNodeParameter('messageId', itemIndex);
-            const response = await this.helpers.httpRequest({
-                method: 'POST',
-                url: `${baseUrl}/getMessageInfo`,
-                headers,
-                json: true,
-                body: { args: { id: messageId } },
-            });
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/getMessageInfo', { id: messageId });
             return response;
         }
         case 'decryptMedia': {
@@ -409,13 +343,7 @@ async function messageOperations(operation, itemIndex) {
             if (messageSerialized) {
                 args.message = messageSerialized;
             }
-            const response = await this.helpers.httpRequest({
-                method: 'POST',
-                url: `${baseUrl}/decryptMedia`,
-                headers,
-                json: true,
-                body: { args },
-            });
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/decryptMedia', args);
             const responseTyped = response;
             let dataUrl;
             if (responseTyped && typeof responseTyped === 'object' && 'response' in responseTyped) {

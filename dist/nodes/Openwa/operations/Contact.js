@@ -68,78 +68,42 @@ exports.contactFields = [
         placeholder: '1234567890@c.us',
     },
 ];
+const ApiRequest_1 = require("../transport/ApiRequest");
 async function contactOperations(operation, itemIndex) {
-    const credentials = await this.getCredentials('openwaApi');
-    const baseUrl = credentials.apiBaseUrl.replace(/\/$/, '');
-    const apiKey = credentials.apiKey;
-    const headers = {
-        api_key: apiKey,
-        'Content-Type': 'application/json',
-    };
     switch (operation) {
         case 'getAllContacts': {
-            const response = await this.helpers.httpRequest({
-                method: 'POST',
-                url: `${baseUrl}/getAllContacts`,
-                headers,
-                json: true,
-                body: { args: {} },
-            });
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/getAllContacts');
+            return response;
             return response;
         }
         case 'getContact': {
             const contactId = this.getNodeParameter('contactId', itemIndex);
-            const response = await this.helpers.httpRequest({
-                method: 'POST',
-                url: `${baseUrl}/getContact`,
-                headers,
-                json: true,
-                body: { args: { contactId } },
-            });
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/getContact', { contactId });
+            return response;
             return response;
         }
         case 'contactBlock': {
             const contactId = this.getNodeParameter('contactId', itemIndex);
-            const response = await this.helpers.httpRequest({
-                method: 'POST',
-                url: `${baseUrl}/contactBlock`,
-                headers,
-                json: true,
-                body: { args: { contactId } },
-            });
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/contactBlock', { contactId });
+            return response;
             return response;
         }
         case 'contactUnblock': {
             const contactId = this.getNodeParameter('contactId', itemIndex);
-            const response = await this.helpers.httpRequest({
-                method: 'POST',
-                url: `${baseUrl}/contactUnblock`,
-                headers,
-                json: true,
-                body: { args: { contactId } },
-            });
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/contactUnblock', { contactId });
+            return response;
             return response;
         }
         case 'checkNumberStatus': {
             const contactId = this.getNodeParameter('contactId', itemIndex);
-            const response = await this.helpers.httpRequest({
-                method: 'POST',
-                url: `${baseUrl}/checkNumberStatus`,
-                headers,
-                json: true,
-                body: { args: { contactId } },
-            });
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/checkNumberStatus', { contactId });
+            return response;
             return response;
         }
         case 'getBusinessProfile': {
             const contactId = this.getNodeParameter('contactId', itemIndex);
-            const response = await this.helpers.httpRequest({
-                method: 'POST',
-                url: `${baseUrl}/getBusinessProfile`,
-                headers,
-                json: true,
-                body: { args: { contactId } },
-            });
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/getBusinessProfile', { contactId });
+            return response;
             return response;
         }
         default:

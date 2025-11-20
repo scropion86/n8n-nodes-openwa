@@ -110,136 +110,75 @@ exports.chatFields = [
         description: 'Duration in minutes to mute (0 = forever)',
     },
 ];
+const ApiRequest_1 = require("../transport/ApiRequest");
 async function chatOperations(operation, itemIndex) {
-    const credentials = await this.getCredentials('openwaApi');
-    const baseUrl = credentials.apiBaseUrl.replace(/\/$/, '');
-    const apiKey = credentials.apiKey;
-    const headers = {
-        api_key: apiKey,
-        'Content-Type': 'application/json',
-    };
     switch (operation) {
         case 'getAllChats': {
-            const response = await this.helpers.httpRequest({
-                method: 'POST',
-                url: `${baseUrl}/getAllChats`,
-                headers,
-                json: true,
-                body: { args: {} },
-            });
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/getAllChats');
+            return response;
             return response;
         }
         case 'getChat': {
             const chatId = this.getNodeParameter('chatId', itemIndex);
-            const response = await this.helpers.httpRequest({
-                method: 'POST',
-                url: `${baseUrl}/getChat`,
-                headers,
-                json: true,
-                body: { args: { chatId } },
-            });
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/getChat', { chatId });
+            return response;
             return response;
         }
         case 'archiveChat': {
             const chatId = this.getNodeParameter('chatId', itemIndex);
-            const response = await this.helpers.httpRequest({
-                method: 'POST',
-                url: `${baseUrl}/archiveChat`,
-                headers,
-                json: true,
-                body: { args: { chatId } },
-            });
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/archiveChat', { chatId });
+            return response;
             return response;
         }
         case 'unarchiveChat': {
             const chatId = this.getNodeParameter('chatId', itemIndex);
-            const response = await this.helpers.httpRequest({
-                method: 'POST',
-                url: `${baseUrl}/unarchiveChat`,
-                headers,
-                json: true,
-                body: { args: { chatId } },
-            });
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/unarchiveChat', { chatId });
+            return response;
             return response;
         }
         case 'deleteChat': {
             const chatId = this.getNodeParameter('chatId', itemIndex);
-            const response = await this.helpers.httpRequest({
-                method: 'POST',
-                url: `${baseUrl}/deleteChat`,
-                headers,
-                json: true,
-                body: { args: { chatId } },
-            });
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/deleteChat', { chatId });
+            return response;
             return response;
         }
         case 'muteChat': {
             const chatId = this.getNodeParameter('chatId', itemIndex);
             const duration = this.getNodeParameter('duration', itemIndex);
-            const response = await this.helpers.httpRequest({
-                method: 'POST',
-                url: `${baseUrl}/muteChat`,
-                headers,
-                json: true,
-                body: { args: {
-                        chatId,
-                        unmuteDate: duration ? Date.now() + duration * 60 * 1000 : 0,
-                    } },
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/muteChat', {
+                chatId,
+                unmuteDate: duration ? Date.now() + duration * 60 * 1000 : 0,
             });
+            return response;
             return response;
         }
         case 'unmuteChat': {
             const chatId = this.getNodeParameter('chatId', itemIndex);
-            const response = await this.helpers.httpRequest({
-                method: 'POST',
-                url: `${baseUrl}/unmuteChat`,
-                headers,
-                json: true,
-                body: { args: { chatId } },
-            });
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/unmuteChat', { chatId });
+            return response;
             return response;
         }
         case 'pinChat': {
             const chatId = this.getNodeParameter('chatId', itemIndex);
-            const response = await this.helpers.httpRequest({
-                method: 'POST',
-                url: `${baseUrl}/pinChat`,
-                headers,
-                json: true,
-                body: { args: { chatId } },
-            });
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/pinChat', { chatId });
+            return response;
             return response;
         }
         case 'clearChat': {
             const chatId = this.getNodeParameter('chatId', itemIndex);
-            const response = await this.helpers.httpRequest({
-                method: 'POST',
-                url: `${baseUrl}/clearChat`,
-                headers,
-                json: true,
-                body: { args: { chatId } },
-            });
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/clearChat', { chatId });
+            return response;
             return response;
         }
         case 'getAllMessagesInChat': {
             const chatId = this.getNodeParameter('chatId', itemIndex);
-            const response = await this.helpers.httpRequest({
-                method: 'POST',
-                url: `${baseUrl}/getAllMessagesInChat`,
-                headers,
-                json: true,
-                body: { args: { chatId } },
-            });
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/getAllMessagesInChat', { chatId });
+            return response;
             return response;
         }
         case 'markAllRead': {
-            const response = await this.helpers.httpRequest({
-                method: 'POST',
-                url: `${baseUrl}/markAllRead`,
-                headers,
-                json: true,
-                body: { args: {} },
-            });
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/markAllRead');
+            return response;
             return response;
         }
         default:

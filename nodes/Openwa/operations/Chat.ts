@@ -110,29 +110,19 @@ export const chatFields: INodeProperties[] = [
 	},
 ];
 
+import { openwaApiRequest } from '../transport/ApiRequest';
+
 export async function chatOperations(
 	this: IExecuteFunctions,
 	operation: string,
 	itemIndex: number,
 ): Promise<unknown> {
-	const credentials = await this.getCredentials('openwaApi');
-	const baseUrl = (credentials.apiBaseUrl as string).replace(/\/$/, '');
-	const apiKey = credentials.apiKey as string;
-
-	const headers = {
-		api_key: apiKey,
-		'Content-Type': 'application/json',
-	};
 
 	switch (operation) {
 		case 'getAllChats': {
-			const response = await this.helpers.httpRequest({
-				method: 'POST',
-				url: `${baseUrl}/getAllChats`,
-				headers,
-				json: true,
-				body: { args: {} },
-			});
+			const response = await openwaApiRequest.call(this, 'POST', '/getAllChats');
+
+			return response;
 
 			return response;
 		}
@@ -140,13 +130,9 @@ export async function chatOperations(
 		case 'getChat': {
 			const chatId = this.getNodeParameter('chatId', itemIndex) as string;
 
-			const response = await this.helpers.httpRequest({
-				method: 'POST',
-				url: `${baseUrl}/getChat`,
-				headers,
-				json: true,
-				body: { args: { chatId } },
-			});
+			const response = await openwaApiRequest.call(this, 'POST', '/getChat', { chatId });
+
+			return response;
 
 			return response;
 		}
@@ -154,13 +140,9 @@ export async function chatOperations(
 		case 'archiveChat': {
 			const chatId = this.getNodeParameter('chatId', itemIndex) as string;
 
-			const response = await this.helpers.httpRequest({
-				method: 'POST',
-				url: `${baseUrl}/archiveChat`,
-				headers,
-				json: true,
-				body: { args: { chatId } },
-			});
+			const response = await openwaApiRequest.call(this, 'POST', '/archiveChat', { chatId });
+
+			return response;
 
 			return response;
 		}
@@ -168,13 +150,9 @@ export async function chatOperations(
 		case 'unarchiveChat': {
 			const chatId = this.getNodeParameter('chatId', itemIndex) as string;
 
-			const response = await this.helpers.httpRequest({
-				method: 'POST',
-				url: `${baseUrl}/unarchiveChat`,
-				headers,
-				json: true,
-				body: { args: { chatId } },
-			});
+			const response = await openwaApiRequest.call(this, 'POST', '/unarchiveChat', { chatId });
+
+			return response;
 
 			return response;
 		}
@@ -182,13 +160,9 @@ export async function chatOperations(
 		case 'deleteChat': {
 			const chatId = this.getNodeParameter('chatId', itemIndex) as string;
 
-			const response = await this.helpers.httpRequest({
-				method: 'POST',
-				url: `${baseUrl}/deleteChat`,
-				headers,
-				json: true,
-				body: { args: { chatId } },
-			});
+			const response = await openwaApiRequest.call(this, 'POST', '/deleteChat', { chatId });
+
+			return response;
 
 			return response;
 		}
@@ -197,16 +171,12 @@ export async function chatOperations(
 			const chatId = this.getNodeParameter('chatId', itemIndex) as string;
 			const duration = this.getNodeParameter('duration', itemIndex) as number;
 
-			const response = await this.helpers.httpRequest({
-				method: 'POST',
-				url: `${baseUrl}/muteChat`,
-				headers,
-				json: true,
-				body: { args: {
-					chatId,
-					unmuteDate: duration ? Date.now() + duration * 60 * 1000 : 0,
-				} },
+			const response = await openwaApiRequest.call(this, 'POST', '/muteChat', {
+				chatId,
+				unmuteDate: duration ? Date.now() + duration * 60 * 1000 : 0,
 			});
+
+			return response;
 
 			return response;
 		}
@@ -214,13 +184,9 @@ export async function chatOperations(
 		case 'unmuteChat': {
 			const chatId = this.getNodeParameter('chatId', itemIndex) as string;
 
-			const response = await this.helpers.httpRequest({
-				method: 'POST',
-				url: `${baseUrl}/unmuteChat`,
-				headers,
-				json: true,
-				body: { args: { chatId } },
-			});
+			const response = await openwaApiRequest.call(this, 'POST', '/unmuteChat', { chatId });
+
+			return response;
 
 			return response;
 		}
@@ -228,13 +194,9 @@ export async function chatOperations(
 		case 'pinChat': {
 			const chatId = this.getNodeParameter('chatId', itemIndex) as string;
 
-			const response = await this.helpers.httpRequest({
-				method: 'POST',
-				url: `${baseUrl}/pinChat`,
-				headers,
-				json: true,
-				body: { args: { chatId } },
-			});
+			const response = await openwaApiRequest.call(this, 'POST', '/pinChat', { chatId });
+
+			return response;
 
 			return response;
 		}
@@ -242,13 +204,9 @@ export async function chatOperations(
 		case 'clearChat': {
 			const chatId = this.getNodeParameter('chatId', itemIndex) as string;
 
-			const response = await this.helpers.httpRequest({
-				method: 'POST',
-				url: `${baseUrl}/clearChat`,
-				headers,
-				json: true,
-				body: { args: { chatId } },
-			});
+			const response = await openwaApiRequest.call(this, 'POST', '/clearChat', { chatId });
+
+			return response;
 
 			return response;
 		}
@@ -256,25 +214,17 @@ export async function chatOperations(
 		case 'getAllMessagesInChat': {
 			const chatId = this.getNodeParameter('chatId', itemIndex) as string;
 
-			const response = await this.helpers.httpRequest({
-				method: 'POST',
-				url: `${baseUrl}/getAllMessagesInChat`,
-				headers,
-				json: true,
-				body: { args: { chatId } },
-			});
+			const response = await openwaApiRequest.call(this, 'POST', '/getAllMessagesInChat', { chatId });
+
+			return response;
 
 			return response;
 		}
 
 		case 'markAllRead': {
-			const response = await this.helpers.httpRequest({
-				method: 'POST',
-				url: `${baseUrl}/markAllRead`,
-				headers,
-				json: true,
-				body: { args: {} },
-			});
+			const response = await openwaApiRequest.call(this, 'POST', '/markAllRead');
+
+			return response;
 
 			return response;
 		}

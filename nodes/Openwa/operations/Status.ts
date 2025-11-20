@@ -1,4 +1,4 @@
-import type { INodeProperties, IExecuteFunctions } from 'n8n-workflow';
+import type { INodeProperties, IExecuteFunctions, IDataObject } from 'n8n-workflow';
 import { NodeOperationError } from 'n8n-workflow';
 
 export const statusFields: INodeProperties[] = [
@@ -130,33 +130,23 @@ export const statusFields: INodeProperties[] = [
 	},
 ];
 
+import { openwaApiRequest } from '../transport/ApiRequest';
+
 export async function statusOperations(
 	this: IExecuteFunctions,
 	operation: string,
 	itemIndex: number,
 ): Promise<unknown> {
-	const credentials = await this.getCredentials('openwaApi');
-	const baseUrl = (credentials.apiBaseUrl as string).replace(/\/$/, '');
-	const apiKey = credentials.apiKey as string;
-
-	const headers = {
-		api_key: apiKey,
-		'Content-Type': 'application/json',
-	};
 
 	switch (operation) {
 		case 'postTextStatus': {
 			const statusText = this.getNodeParameter('statusText', itemIndex) as string;
 
-			const response = await this.helpers.httpRequest({
-				method: 'POST',
-				url: `${baseUrl}/postTextStatus`,
-				headers,
-				json: true,
-				body: { args: {
-					text: statusText,
-				} },
+			const response = await openwaApiRequest.call(this, 'POST', '/postTextStatus', {
+				text: statusText,
 			});
+
+			return response;
 
 			return response;
 		}
@@ -164,13 +154,9 @@ export async function statusOperations(
 		case 'postImageStatus': {
 			const imageUrl = this.getNodeParameter('imageUrl', itemIndex) as string;
 
-			const response = await this.helpers.httpRequest({
-				method: 'POST',
-				url: `${baseUrl}/postImageStatus`,
-				headers,
-				json: true,
-				body: { args: { imageUrl } },
-			});
+			const response = await openwaApiRequest.call(this, 'POST', '/postImageStatus', { imageUrl });
+
+			return response;
 
 			return response;
 		}
@@ -178,25 +164,17 @@ export async function statusOperations(
 		case 'postVideoStatus': {
 			const videoUrl = this.getNodeParameter('videoUrl', itemIndex) as string;
 
-			const response = await this.helpers.httpRequest({
-				method: 'POST',
-				url: `${baseUrl}/postVideoStatus`,
-				headers,
-				json: true,
-				body: { args: { videoUrl } },
-			});
+			const response = await openwaApiRequest.call(this, 'POST', '/postVideoStatus', { videoUrl });
+
+			return response;
 
 			return response;
 		}
 
 		case 'getMyStatusArray': {
-			const response = await this.helpers.httpRequest({
-				method: 'POST',
-				url: `${baseUrl}/getMyStatusArray`,
-				headers,
-				json: true,
-				body: { args: {} },
-			});
+			const response = await openwaApiRequest.call(this, 'POST', '/getMyStatusArray');
+
+			return response;
 
 			return response;
 		}
@@ -204,13 +182,9 @@ export async function statusOperations(
 		case 'deleteStatus': {
 			const statusId = this.getNodeParameter('statusId', itemIndex) as string;
 
-			const response = await this.helpers.httpRequest({
-				method: 'POST',
-				url: `${baseUrl}/deleteStatus`,
-				headers,
-				json: true,
-				body: { args: { statusId } },
-			});
+			const response = await openwaApiRequest.call(this, 'POST', '/deleteStatus', { statusId });
+
+			return response;
 
 			return response;
 		}
@@ -218,13 +192,9 @@ export async function statusOperations(
 		case 'getStatus': {
 			const statusId = this.getNodeParameter('statusId', itemIndex) as string;
 
-			const response = await this.helpers.httpRequest({
-				method: 'POST',
-				url: `${baseUrl}/getStatus`,
-				headers,
-				json: true,
-				body: { args: { statusId } },
-			});
+			const response = await openwaApiRequest.call(this, 'POST', '/getStatus', { statusId });
+
+			return response;
 
 			return response;
 		}
@@ -232,18 +202,14 @@ export async function statusOperations(
 		case 'getSnapshot': {
 			const chatId = this.getNodeParameter('chatId', itemIndex) as string;
 
-			const args: Record<string, unknown> = {};
+			const args: IDataObject = {};
 			if (chatId) {
 				args.chatId = chatId;
 			}
 
-			const response = await this.helpers.httpRequest({
-				method: 'POST',
-				url: `${baseUrl}/getSnapshot`,
-				headers,
-				json: true,
-				body: { args },
-			});
+			const response = await openwaApiRequest.call(this, 'POST', '/getSnapshot', args as IDataObject);
+
+			return response;
 
 			return response;
 		}

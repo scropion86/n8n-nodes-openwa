@@ -144,19 +144,13 @@ export const groupFields: INodeProperties[] = [
 	},
 ];
 
+import { openwaApiRequest } from '../transport/ApiRequest';
+
 export async function groupOperations(
 	this: IExecuteFunctions,
 	operation: string,
 	itemIndex: number,
 ): Promise<unknown> {
-	const credentials = await this.getCredentials('openwaApi');
-	const baseUrl = (credentials.apiBaseUrl as string).replace(/\/$/, '');
-	const apiKey = credentials.apiKey as string;
-
-	const headers = {
-		api_key: apiKey,
-		'Content-Type': 'application/json',
-	};
 
 	switch (operation) {
 		case 'createGroup': {
@@ -165,28 +159,20 @@ export async function groupOperations(
 
 			const participantList = participants.split(',').map((p) => p.trim());
 
-			const response = await this.helpers.httpRequest({
-				method: 'POST',
-				url: `${baseUrl}/createGroup`,
-				headers,
-				json: true,
-				body: { args: {
-					title: groupTitle,
-					participants: participantList,
-				} },
+			const response = await openwaApiRequest.call(this, 'POST', '/createGroup', {
+				title: groupTitle,
+				participants: participantList,
 			});
+
+			return response;
 
 			return response;
 		}
 
 		case 'getAllGroups': {
-			const response = await this.helpers.httpRequest({
-				method: 'POST',
-				url: `${baseUrl}/getAllGroups`,
-				headers,
-				json: true,
-				body: { args: {} },
-			});
+			const response = await openwaApiRequest.call(this, 'POST', '/getAllGroups');
+
+			return response;
 
 			return response;
 		}
@@ -194,13 +180,9 @@ export async function groupOperations(
 		case 'getGroupInfo': {
 			const groupId = this.getNodeParameter('groupId', itemIndex) as string;
 
-			const response = await this.helpers.httpRequest({
-				method: 'POST',
-				url: `${baseUrl}/getGroupInfo`,
-				headers,
-				json: true,
-				body: { args: { groupId } },
-			});
+			const response = await openwaApiRequest.call(this, 'POST', '/getGroupInfo', { groupId });
+
+			return response;
 
 			return response;
 		}
@@ -211,16 +193,12 @@ export async function groupOperations(
 
 			const participantList = participants.split(',').map((p) => p.trim());
 
-			const response = await this.helpers.httpRequest({
-				method: 'POST',
-				url: `${baseUrl}/addParticipant`,
-				headers,
-				json: true,
-				body: { args: {
-					groupId,
-					participants: participantList,
-				} },
+			const response = await openwaApiRequest.call(this, 'POST', '/addParticipant', {
+				groupId,
+				participants: participantList,
 			});
+
+			return response;
 
 			return response;
 		}
@@ -229,16 +207,12 @@ export async function groupOperations(
 			const groupId = this.getNodeParameter('groupId', itemIndex) as string;
 			const participantNumber = this.getNodeParameter('participantNumber', itemIndex) as string;
 
-			const response = await this.helpers.httpRequest({
-				method: 'POST',
-				url: `${baseUrl}/removeParticipant`,
-				headers,
-				json: true,
-				body: { args: {
-					groupId,
-					participant: participantNumber,
-				} },
+			const response = await openwaApiRequest.call(this, 'POST', '/removeParticipant', {
+				groupId,
+				participant: participantNumber,
 			});
+
+			return response;
 
 			return response;
 		}
@@ -247,16 +221,12 @@ export async function groupOperations(
 			const groupId = this.getNodeParameter('groupId', itemIndex) as string;
 			const participantNumber = this.getNodeParameter('participantNumber', itemIndex) as string;
 
-			const response = await this.helpers.httpRequest({
-				method: 'POST',
-				url: `${baseUrl}/promoteParticipant`,
-				headers,
-				json: true,
-				body: { args: {
-					groupId,
-					participant: participantNumber,
-				} },
+			const response = await openwaApiRequest.call(this, 'POST', '/promoteParticipant', {
+				groupId,
+				participant: participantNumber,
 			});
+
+			return response;
 
 			return response;
 		}
@@ -265,16 +235,12 @@ export async function groupOperations(
 			const groupId = this.getNodeParameter('groupId', itemIndex) as string;
 			const participantNumber = this.getNodeParameter('participantNumber', itemIndex) as string;
 
-			const response = await this.helpers.httpRequest({
-				method: 'POST',
-				url: `${baseUrl}/demoteParticipant`,
-				headers,
-				json: true,
-				body: { args: {
-					groupId,
-					participant: participantNumber,
-				} },
+			const response = await openwaApiRequest.call(this, 'POST', '/demoteParticipant', {
+				groupId,
+				participant: participantNumber,
 			});
+
+			return response;
 
 			return response;
 		}
@@ -282,13 +248,9 @@ export async function groupOperations(
 		case 'leaveGroup': {
 			const groupId = this.getNodeParameter('groupId', itemIndex) as string;
 
-			const response = await this.helpers.httpRequest({
-				method: 'POST',
-				url: `${baseUrl}/leaveGroup`,
-				headers,
-				json: true,
-				body: { args: { groupId } },
-			});
+			const response = await openwaApiRequest.call(this, 'POST', '/leaveGroup', { groupId });
+
+			return response;
 
 			return response;
 		}
@@ -297,16 +259,12 @@ export async function groupOperations(
 			const groupId = this.getNodeParameter('groupId', itemIndex) as string;
 			const groupTitle = this.getNodeParameter('groupTitle', itemIndex) as string;
 
-			const response = await this.helpers.httpRequest({
-				method: 'POST',
-				url: `${baseUrl}/setGroupTitle`,
-				headers,
-				json: true,
-				body: {
-					groupId,
-					title: groupTitle,
-				},
+			const response = await openwaApiRequest.call(this, 'POST', '/setGroupTitle', {
+				groupId,
+				title: groupTitle,
 			});
+
+			return response;
 
 			return response;
 		}
@@ -315,16 +273,12 @@ export async function groupOperations(
 			const groupId = this.getNodeParameter('groupId', itemIndex) as string;
 			const description = this.getNodeParameter('description', itemIndex) as string;
 
-			const response = await this.helpers.httpRequest({
-				method: 'POST',
-				url: `${baseUrl}/setGroupDescription`,
-				headers,
-				json: true,
-				body: {
-					groupId,
-					description,
-				},
+			const response = await openwaApiRequest.call(this, 'POST', '/setGroupDescription', {
+				groupId,
+				description,
 			});
+
+			return response;
 
 			return response;
 		}

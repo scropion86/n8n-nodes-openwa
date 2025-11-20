@@ -144,152 +144,96 @@ exports.groupFields = [
         typeOptions: { rows: 3 },
     },
 ];
+const ApiRequest_1 = require("../transport/ApiRequest");
 async function groupOperations(operation, itemIndex) {
-    const credentials = await this.getCredentials('openwaApi');
-    const baseUrl = credentials.apiBaseUrl.replace(/\/$/, '');
-    const apiKey = credentials.apiKey;
-    const headers = {
-        api_key: apiKey,
-        'Content-Type': 'application/json',
-    };
     switch (operation) {
         case 'createGroup': {
             const groupTitle = this.getNodeParameter('groupTitle', itemIndex);
             const participants = this.getNodeParameter('participants', itemIndex);
             const participantList = participants.split(',').map((p) => p.trim());
-            const response = await this.helpers.httpRequest({
-                method: 'POST',
-                url: `${baseUrl}/createGroup`,
-                headers,
-                json: true,
-                body: { args: {
-                        title: groupTitle,
-                        participants: participantList,
-                    } },
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/createGroup', {
+                title: groupTitle,
+                participants: participantList,
             });
+            return response;
             return response;
         }
         case 'getAllGroups': {
-            const response = await this.helpers.httpRequest({
-                method: 'POST',
-                url: `${baseUrl}/getAllGroups`,
-                headers,
-                json: true,
-                body: { args: {} },
-            });
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/getAllGroups');
+            return response;
             return response;
         }
         case 'getGroupInfo': {
             const groupId = this.getNodeParameter('groupId', itemIndex);
-            const response = await this.helpers.httpRequest({
-                method: 'POST',
-                url: `${baseUrl}/getGroupInfo`,
-                headers,
-                json: true,
-                body: { args: { groupId } },
-            });
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/getGroupInfo', { groupId });
+            return response;
             return response;
         }
         case 'addParticipant': {
             const groupId = this.getNodeParameter('groupId', itemIndex);
             const participants = this.getNodeParameter('participants', itemIndex);
             const participantList = participants.split(',').map((p) => p.trim());
-            const response = await this.helpers.httpRequest({
-                method: 'POST',
-                url: `${baseUrl}/addParticipant`,
-                headers,
-                json: true,
-                body: { args: {
-                        groupId,
-                        participants: participantList,
-                    } },
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/addParticipant', {
+                groupId,
+                participants: participantList,
             });
+            return response;
             return response;
         }
         case 'removeParticipant': {
             const groupId = this.getNodeParameter('groupId', itemIndex);
             const participantNumber = this.getNodeParameter('participantNumber', itemIndex);
-            const response = await this.helpers.httpRequest({
-                method: 'POST',
-                url: `${baseUrl}/removeParticipant`,
-                headers,
-                json: true,
-                body: { args: {
-                        groupId,
-                        participant: participantNumber,
-                    } },
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/removeParticipant', {
+                groupId,
+                participant: participantNumber,
             });
+            return response;
             return response;
         }
         case 'promoteParticipant': {
             const groupId = this.getNodeParameter('groupId', itemIndex);
             const participantNumber = this.getNodeParameter('participantNumber', itemIndex);
-            const response = await this.helpers.httpRequest({
-                method: 'POST',
-                url: `${baseUrl}/promoteParticipant`,
-                headers,
-                json: true,
-                body: { args: {
-                        groupId,
-                        participant: participantNumber,
-                    } },
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/promoteParticipant', {
+                groupId,
+                participant: participantNumber,
             });
+            return response;
             return response;
         }
         case 'demoteParticipant': {
             const groupId = this.getNodeParameter('groupId', itemIndex);
             const participantNumber = this.getNodeParameter('participantNumber', itemIndex);
-            const response = await this.helpers.httpRequest({
-                method: 'POST',
-                url: `${baseUrl}/demoteParticipant`,
-                headers,
-                json: true,
-                body: { args: {
-                        groupId,
-                        participant: participantNumber,
-                    } },
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/demoteParticipant', {
+                groupId,
+                participant: participantNumber,
             });
+            return response;
             return response;
         }
         case 'leaveGroup': {
             const groupId = this.getNodeParameter('groupId', itemIndex);
-            const response = await this.helpers.httpRequest({
-                method: 'POST',
-                url: `${baseUrl}/leaveGroup`,
-                headers,
-                json: true,
-                body: { args: { groupId } },
-            });
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/leaveGroup', { groupId });
+            return response;
             return response;
         }
         case 'setGroupTitle': {
             const groupId = this.getNodeParameter('groupId', itemIndex);
             const groupTitle = this.getNodeParameter('groupTitle', itemIndex);
-            const response = await this.helpers.httpRequest({
-                method: 'POST',
-                url: `${baseUrl}/setGroupTitle`,
-                headers,
-                json: true,
-                body: {
-                    groupId,
-                    title: groupTitle,
-                },
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/setGroupTitle', {
+                groupId,
+                title: groupTitle,
             });
+            return response;
             return response;
         }
         case 'setGroupDescription': {
             const groupId = this.getNodeParameter('groupId', itemIndex);
             const description = this.getNodeParameter('description', itemIndex);
-            const response = await this.helpers.httpRequest({
-                method: 'POST',
-                url: `${baseUrl}/setGroupDescription`,
-                headers,
-                json: true,
-                body: {
-                    groupId,
-                    description,
-                },
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/setGroupDescription', {
+                groupId,
+                description,
             });
+            return response;
             return response;
         }
         default:
