@@ -22,6 +22,12 @@ exports.groupFields = [
                 action: 'Add participant',
             },
             {
+                name: 'Approve Join Request',
+                value: 'approveGroupJoinRequest',
+                description: 'Approve a participant\'s request to join the group',
+                action: 'Approve join request',
+            },
+            {
                 name: 'Create Group',
                 value: 'createGroup',
                 description: 'Create a new group',
@@ -39,10 +45,34 @@ exports.groupFields = [
                 action: 'Get all groups',
             },
             {
+                name: 'Get Group Admins',
+                value: 'getGroupAdmins',
+                description: 'Get the admins of a group',
+                action: 'Get group admins',
+            },
+            {
                 name: 'Get Group Info',
                 value: 'getGroupInfo',
                 description: 'Get group information',
                 action: 'Get group info',
+            },
+            {
+                name: 'Get Group Invite Link',
+                value: 'getGroupInviteLink',
+                description: 'Get the invite link for a group',
+                action: 'Get group invite link',
+            },
+            {
+                name: 'Get Group Members',
+                value: 'getGroupMembers',
+                description: 'Get the members of a group',
+                action: 'Get group members',
+            },
+            {
+                name: 'Join Group via Link',
+                value: 'joinGroupViaLink',
+                description: 'Join a group using an invite link',
+                action: 'Join group via link',
             },
             {
                 name: 'Leave Group',
@@ -57,10 +87,22 @@ exports.groupFields = [
                 action: 'Promote participant',
             },
             {
+                name: 'Reject Join Request',
+                value: 'rejectGroupJoinRequest',
+                description: 'Reject a participant\'s request to join the group',
+                action: 'Reject join request',
+            },
+            {
                 name: 'Remove Participant',
                 value: 'removeParticipant',
                 description: 'Remove a participant from a group',
                 action: 'Remove participant',
+            },
+            {
+                name: 'Revoke Group Invite Link',
+                value: 'revokeGroupInviteLink',
+                description: 'Revoke the invite link for a group',
+                action: 'Revoke group invite link',
             },
             {
                 name: 'Set Group Description',
@@ -68,9 +110,21 @@ exports.groupFields = [
                 action: 'Set group description',
             },
             {
+                name: 'Set Group Edit to Admins Only',
+                value: 'setGroupEditToAdminsOnly',
+                description: 'Set whether only admins can edit group info',
+                action: 'Set group edit to admins only',
+            },
+            {
                 name: 'Set Group Title',
                 value: 'setGroupTitle',
                 action: 'Set group title',
+            },
+            {
+                name: 'Set Group to Admins Only',
+                value: 'setGroupToAdminsOnly',
+                description: 'Set whether only admins can send messages',
+                action: 'Set group to admins only',
             },
         ],
         default: 'getAllGroups',
@@ -83,7 +137,7 @@ exports.groupFields = [
         displayOptions: {
             show: {
                 resource: ['group'],
-                operation: ['getGroupInfo', 'addParticipant', 'removeParticipant', 'promoteParticipant', 'demoteParticipant', 'leaveGroup', 'setGroupTitle', 'setGroupDescription'],
+                operation: ['getGroupInfo', 'addParticipant', 'removeParticipant', 'promoteParticipant', 'demoteParticipant', 'leaveGroup', 'setGroupTitle', 'setGroupDescription', 'getGroupAdmins', 'getGroupMembers', 'getGroupInviteLink', 'revokeGroupInviteLink', 'approveGroupJoinRequest', 'rejectGroupJoinRequest', 'setGroupToAdminsOnly', 'setGroupEditToAdminsOnly'],
             },
         },
         placeholder: '123456789-987654321@g.us',
@@ -123,7 +177,7 @@ exports.groupFields = [
         displayOptions: {
             show: {
                 resource: ['group'],
-                operation: ['removeParticipant', 'promoteParticipant', 'demoteParticipant'],
+                operation: ['removeParticipant', 'promoteParticipant', 'demoteParticipant', 'approveGroupJoinRequest', 'rejectGroupJoinRequest'],
             },
         },
         description: 'The participant phone number',
@@ -142,6 +196,32 @@ exports.groupFields = [
         },
         description: 'Group description',
         typeOptions: { rows: 3 },
+    },
+    {
+        displayName: 'Invite Link',
+        name: 'inviteLink',
+        type: 'string',
+        default: '',
+        displayOptions: {
+            show: {
+                resource: ['group'],
+                operation: ['joinGroupViaLink'],
+            },
+        },
+        description: 'The invite link to join the group',
+    },
+    {
+        displayName: 'Admins Only',
+        name: 'adminsOnly',
+        type: 'boolean',
+        default: false,
+        displayOptions: {
+            show: {
+                resource: ['group'],
+                operation: ['setGroupToAdminsOnly', 'setGroupEditToAdminsOnly'],
+            },
+        },
+        description: 'Whether to enable the setting for admins only',
     },
 ];
 const ApiRequest_1 = require("../transport/ApiRequest");
@@ -234,6 +314,66 @@ async function groupOperations(operation, itemIndex) {
                 description,
             });
             return response;
+        }
+        case 'getGroupAdmins': {
+            const groupId = this.getNodeParameter('groupId', itemIndex);
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/getGroupAdmins', { groupId });
+            return response;
+        }
+        case 'getGroupMembers': {
+            const groupId = this.getNodeParameter('groupId', itemIndex);
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/getGroupMembers', { groupId });
+            return response;
+        }
+        case 'getGroupInviteLink': {
+            const groupId = this.getNodeParameter('groupId', itemIndex);
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/getGroupInviteLink', { chatId: groupId });
+            return response;
+        }
+        case 'revokeGroupInviteLink': {
+            const groupId = this.getNodeParameter('groupId', itemIndex);
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/revokeGroupInviteLink', { chatId: groupId });
+            return response;
+        }
+        case 'joinGroupViaLink': {
+            const inviteLink = this.getNodeParameter('inviteLink', itemIndex);
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/joinGroupViaLink', { link: inviteLink });
+            return response;
+        }
+        case 'approveGroupJoinRequest': {
+            const groupId = this.getNodeParameter('groupId', itemIndex);
+            const participantNumber = this.getNodeParameter('participantNumber', itemIndex);
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/approveGroupJoinRequest', {
+                groupChatId: groupId,
+                contactId: participantNumber,
+            });
+            return response;
+        }
+        case 'rejectGroupJoinRequest': {
+            const groupId = this.getNodeParameter('groupId', itemIndex);
+            const participantNumber = this.getNodeParameter('participantNumber', itemIndex);
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/rejectGroupJoinRequest', {
+                groupChatId: groupId,
+                contactId: participantNumber,
+            });
+            return response;
+        }
+        case 'setGroupToAdminsOnly': {
+            const groupId = this.getNodeParameter('groupId', itemIndex);
+            const adminsOnly = this.getNodeParameter('adminsOnly', itemIndex);
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/setGroupToAdminsOnly', {
+                groupId,
+                onlyAdmins: adminsOnly,
+            });
+            return response;
+        }
+        case 'setGroupEditToAdminsOnly': {
+            const groupId = this.getNodeParameter('groupId', itemIndex);
+            const adminsOnly = this.getNodeParameter('adminsOnly', itemIndex);
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/setGroupEditToAdminsOnly', {
+                groupId,
+                onlyAdmins: adminsOnly,
+            });
             return response;
         }
         default:

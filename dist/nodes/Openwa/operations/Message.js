@@ -34,6 +34,12 @@ exports.messageFields = [
                 action: 'Edit message',
             },
             {
+                name: 'Forward Messages',
+                value: 'forwardMessages',
+                description: 'Forward messages to a chat',
+                action: 'Forward messages',
+            },
+            {
                 name: 'Get Message Info',
                 value: 'getMessageInfo',
                 description: 'Get information about a message',
@@ -58,6 +64,12 @@ exports.messageFields = [
                 action: 'Send audio message',
             },
             {
+                name: 'Send Contact',
+                value: 'sendContact',
+                description: 'Send a contact',
+                action: 'Send contact',
+            },
+            {
                 name: 'Send File',
                 value: 'sendFile',
                 description: 'Send a file message',
@@ -70,16 +82,64 @@ exports.messageFields = [
                 action: 'Send image message',
             },
             {
+                name: 'Send Image as Sticker',
+                value: 'sendImageAsSticker',
+                description: 'Send an image as a sticker',
+                action: 'Send image as sticker',
+            },
+            {
+                name: 'Send List Message',
+                value: 'sendListMessage',
+                description: 'Send a list message',
+                action: 'Send list message',
+            },
+            {
+                name: 'Send Location',
+                value: 'sendLocation',
+                description: 'Send a location message',
+                action: 'Send location',
+            },
+            {
+                name: 'Send Poll',
+                value: 'sendPoll',
+                description: 'Send a poll',
+                action: 'Send poll',
+            },
+            {
+                name: 'Send Seen',
+                value: 'sendSeen',
+                description: 'Send a read receipt',
+                action: 'Send seen',
+            },
+            {
+                name: 'Send Sticker From URL',
+                value: 'sendStickerfromUrl',
+                description: 'Send a sticker from a URL',
+                action: 'Send sticker from url',
+            },
+            {
                 name: 'Send Text',
                 value: 'sendText',
                 description: 'Send a text message',
                 action: 'Send text message',
             },
             {
+                name: 'Send VCard',
+                value: 'sendVCard',
+                description: 'Send a VCard',
+                action: 'Send vcard',
+            },
+            {
                 name: 'Send Video',
                 value: 'sendVideo',
                 description: 'Send a video message',
                 action: 'Send video message',
+            },
+            {
+                name: 'Send YouTube Link',
+                value: 'sendYoutubeLink',
+                description: 'Send a YouTube link',
+                action: 'Send youtube link',
             },
         ],
         default: 'sendText',
@@ -136,7 +196,7 @@ exports.messageFields = [
         displayOptions: {
             show: {
                 resource: ['message'],
-                operation: ['sendImage', 'sendAudio', 'sendFile', 'sendVideo'],
+                operation: ['sendImage', 'sendAudio', 'sendFile', 'sendVideo', 'sendImageAsSticker', 'sendStickerfromUrl'],
             },
         },
         description: 'URL of the file to send',
@@ -240,6 +300,227 @@ exports.messageFields = [
         },
         description: 'New text for the edited message',
         typeOptions: { rows: 3 },
+    },
+    {
+        displayName: 'Message IDs',
+        name: 'messageIds',
+        type: 'string',
+        default: '',
+        displayOptions: {
+            show: {
+                resource: ['message'],
+                operation: ['forwardMessages'],
+            },
+        },
+        description: 'Comma-separated list of message IDs to forward',
+    },
+    {
+        displayName: 'Skip My Messages',
+        name: 'skipMyMessages',
+        type: 'boolean',
+        default: false,
+        displayOptions: {
+            show: {
+                resource: ['message'],
+                operation: ['forwardMessages'],
+            },
+        },
+        description: 'Whether to skip forwarding your own messages',
+    },
+    {
+        displayName: 'Contact ID',
+        name: 'contactId',
+        type: 'string',
+        default: '',
+        displayOptions: {
+            show: {
+                resource: ['message'],
+                operation: ['sendContact'],
+            },
+        },
+        description: 'The contact ID to send',
+    },
+    {
+        displayName: 'Title',
+        name: 'title',
+        type: 'string',
+        default: '',
+        displayOptions: {
+            show: {
+                resource: ['message'],
+                operation: ['sendListMessage'],
+            },
+        },
+        description: 'Title of the list message',
+    },
+    {
+        displayName: 'Description',
+        name: 'description',
+        type: 'string',
+        default: '',
+        displayOptions: {
+            show: {
+                resource: ['message'],
+                operation: ['sendListMessage'],
+            },
+        },
+        description: 'Description of the list message',
+    },
+    {
+        displayName: 'Button Text',
+        name: 'buttonText',
+        type: 'string',
+        default: '',
+        displayOptions: {
+            show: {
+                resource: ['message'],
+                operation: ['sendListMessage'],
+            },
+        },
+        description: 'Text for the button',
+    },
+    {
+        displayName: 'Sections',
+        name: 'sections',
+        type: 'json',
+        default: '[]',
+        displayOptions: {
+            show: {
+                resource: ['message'],
+                operation: ['sendListMessage'],
+            },
+        },
+        description: 'Sections for the list message',
+    },
+    {
+        displayName: 'Latitude',
+        name: 'latitude',
+        type: 'string',
+        default: '',
+        displayOptions: {
+            show: {
+                resource: ['message'],
+                operation: ['sendLocation'],
+            },
+        },
+        description: 'Latitude of the location',
+    },
+    {
+        displayName: 'Longitude',
+        name: 'longitude',
+        type: 'string',
+        default: '',
+        displayOptions: {
+            show: {
+                resource: ['message'],
+                operation: ['sendLocation'],
+            },
+        },
+        description: 'Longitude of the location',
+    },
+    {
+        displayName: 'Location Text',
+        name: 'locationText',
+        type: 'string',
+        default: '',
+        displayOptions: {
+            show: {
+                resource: ['message'],
+                operation: ['sendLocation'],
+            },
+        },
+        description: 'Text to display with the location',
+    },
+    {
+        displayName: 'Poll Name',
+        name: 'pollName',
+        type: 'string',
+        default: '',
+        displayOptions: {
+            show: {
+                resource: ['message'],
+                operation: ['sendPoll'],
+            },
+        },
+        description: 'Name of the poll',
+    },
+    {
+        displayName: 'Poll Options',
+        name: 'pollOptions',
+        type: 'string',
+        default: '',
+        displayOptions: {
+            show: {
+                resource: ['message'],
+                operation: ['sendPoll'],
+            },
+        },
+        description: 'Comma-separated list of poll options',
+    },
+    {
+        displayName: 'Allow Multi Select',
+        name: 'allowMultiSelect',
+        type: 'boolean',
+        default: false,
+        displayOptions: {
+            show: {
+                resource: ['message'],
+                operation: ['sendPoll'],
+            },
+        },
+        description: 'Whether to allow multiple selections in the poll',
+    },
+    {
+        displayName: 'VCard',
+        name: 'vcard',
+        type: 'string',
+        default: '',
+        displayOptions: {
+            show: {
+                resource: ['message'],
+                operation: ['sendVCard'],
+            },
+        },
+        description: 'VCard data',
+    },
+    {
+        displayName: 'Contact Name',
+        name: 'contactName',
+        type: 'string',
+        default: '',
+        displayOptions: {
+            show: {
+                resource: ['message'],
+                operation: ['sendVCard'],
+            },
+        },
+        description: 'Name of the contact',
+    },
+    {
+        displayName: 'Contact Number',
+        name: 'contactNumber',
+        type: 'string',
+        default: '',
+        displayOptions: {
+            show: {
+                resource: ['message'],
+                operation: ['sendVCard'],
+            },
+        },
+        description: 'Number of the contact',
+    },
+    {
+        displayName: 'Video URL',
+        name: 'videoUrl',
+        type: 'string',
+        default: '',
+        displayOptions: {
+            show: {
+                resource: ['message'],
+                operation: ['sendYoutubeLink'],
+            },
+        },
+        description: 'URL of the YouTube video',
     },
 ];
 const ApiRequest_1 = require("../transport/ApiRequest");
@@ -379,6 +660,133 @@ async function messageOperations(operation, itemIndex) {
                 },
             };
             return [item];
+        }
+        case 'forwardMessages': {
+            const chatId = this.getNodeParameter('chatId', itemIndex);
+            const messageIds = this.getNodeParameter('messageIds', itemIndex);
+            const skipMyMessages = this.getNodeParameter('skipMyMessages', itemIndex);
+            let messages = messageIds;
+            if (typeof messageIds === 'string' && messageIds.includes(',')) {
+                messages = messageIds.split(',').map((id) => id.trim());
+            }
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/forwardMessages', {
+                to: chatId,
+                messages,
+                skipMyMessages,
+            });
+            return response;
+        }
+        case 'sendContact': {
+            const chatId = this.getNodeParameter('chatId', itemIndex);
+            const contactId = this.getNodeParameter('contactId', itemIndex);
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/sendContact', {
+                to: chatId,
+                contactId,
+            });
+            return response;
+        }
+        case 'sendImageAsSticker': {
+            const chatId = this.getNodeParameter('chatId', itemIndex);
+            const fileUrl = this.getNodeParameter('fileUrl', itemIndex);
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/sendImageAsSticker', {
+                to: chatId,
+                image: fileUrl,
+            });
+            return response;
+        }
+        case 'sendListMessage': {
+            const chatId = this.getNodeParameter('chatId', itemIndex);
+            const title = this.getNodeParameter('title', itemIndex);
+            const description = this.getNodeParameter('description', itemIndex);
+            const buttonText = this.getNodeParameter('buttonText', itemIndex);
+            const sectionsJson = this.getNodeParameter('sections', itemIndex);
+            let sections = [];
+            if (typeof sectionsJson === 'string') {
+                try {
+                    sections = JSON.parse(sectionsJson);
+                }
+                catch {
+                }
+            }
+            else {
+                sections = sectionsJson;
+            }
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/sendListMessage', {
+                to: chatId,
+                title,
+                description,
+                actionText: buttonText,
+                sections,
+            });
+            return response;
+        }
+        case 'sendLocation': {
+            const chatId = this.getNodeParameter('chatId', itemIndex);
+            const latitude = this.getNodeParameter('latitude', itemIndex);
+            const longitude = this.getNodeParameter('longitude', itemIndex);
+            const locationText = this.getNodeParameter('locationText', itemIndex);
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/sendLocation', {
+                to: chatId,
+                lat: latitude,
+                lng: longitude,
+                loc: locationText,
+            });
+            return response;
+        }
+        case 'sendPoll': {
+            const chatId = this.getNodeParameter('chatId', itemIndex);
+            const pollName = this.getNodeParameter('pollName', itemIndex);
+            const pollOptionsStr = this.getNodeParameter('pollOptions', itemIndex);
+            const allowMultiSelect = this.getNodeParameter('allowMultiSelect', itemIndex);
+            let options = [];
+            if (pollOptionsStr) {
+                options = pollOptionsStr.split(',').map((opt) => opt.trim());
+            }
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/sendPoll', {
+                to: chatId,
+                name: pollName,
+                options,
+                allowMultiSelect,
+            });
+            return response;
+        }
+        case 'sendSeen': {
+            const chatId = this.getNodeParameter('chatId', itemIndex);
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/sendSeen', {
+                to: chatId,
+            });
+            return response;
+        }
+        case 'sendStickerfromUrl': {
+            const chatId = this.getNodeParameter('chatId', itemIndex);
+            const fileUrl = this.getNodeParameter('fileUrl', itemIndex);
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/sendStickerfromUrl', {
+                to: chatId,
+                url: fileUrl,
+            });
+            return response;
+        }
+        case 'sendVCard': {
+            const chatId = this.getNodeParameter('chatId', itemIndex);
+            const vcard = this.getNodeParameter('vcard', itemIndex);
+            const contactName = this.getNodeParameter('contactName', itemIndex);
+            const contactNumber = this.getNodeParameter('contactNumber', itemIndex);
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/sendVCard', {
+                to: chatId,
+                vcard,
+                contactName,
+                contactNumber,
+            });
+            return response;
+        }
+        case 'sendYoutubeLink': {
+            const chatId = this.getNodeParameter('chatId', itemIndex);
+            const videoUrl = this.getNodeParameter('videoUrl', itemIndex);
+            const response = await ApiRequest_1.openwaApiRequest.call(this, 'POST', '/sendYoutubeLink', {
+                to: chatId,
+                url: videoUrl,
+            });
+            return response;
         }
         default:
             throw new n8n_workflow_1.NodeOperationError(this.getNode(), `Unknown operation: ${operation}`);

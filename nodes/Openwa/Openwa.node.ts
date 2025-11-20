@@ -12,6 +12,7 @@ import { groupOperations, groupFields } from './operations/Group';
 import { contactOperations, contactFields } from './operations/Contact';
 import { statusOperations, statusFields } from './operations/Status';
 import { webhookOperations, webhookFields } from './operations/Webhook';
+import { systemOperations, systemFields } from './operations/System';
 
 export class Openwa implements INodeType {
 	description: INodeTypeDescription = {
@@ -66,6 +67,11 @@ export class Openwa implements INodeType {
 						description: 'Manage status updates',
 					},
 					{
+						name: 'System',
+						value: 'system',
+						description: 'System operations',
+					},
+					{
 						name: 'Webhook',
 						value: 'webhook',
 						description: 'Manage webhooks',
@@ -79,6 +85,7 @@ export class Openwa implements INodeType {
 			...contactFields,
 			...statusFields,
 			...webhookFields,
+			...systemFields,
 		],
 		usableAsTool: true,
 	};
@@ -105,6 +112,8 @@ export class Openwa implements INodeType {
 					operationResult = await statusOperations.call(this, operation, i);
 				} else if (resource === 'webhook') {
 					operationResult = await webhookOperations.call(this, operation, i);
+				} else if (resource === 'system') {
+					operationResult = await systemOperations.call(this, operation, i);
 				} else {
 					throw new NodeOperationError(
 						this.getNode(),

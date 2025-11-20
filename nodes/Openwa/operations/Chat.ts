@@ -20,6 +20,12 @@ export const chatFields: INodeProperties[] = [
 				action: 'Archive chat',
 			},
 			{
+				name: 'Clear All Chats',
+				value: 'clearAllChats',
+
+				action: 'Clear all chats',
+			},
+			{
 				name: 'Clear Chat',
 				value: 'clearChat',
 				description: 'Clear all messages from a chat',
@@ -67,6 +73,12 @@ export const chatFields: INodeProperties[] = [
 				action: 'Pin chat',
 			},
 			{
+				name: 'Set Chat State',
+				value: 'setChatState',
+				description: 'Set the state of a chat (e.g., typing)',
+				action: 'Set chat state',
+			},
+			{
 				name: 'Unarchive Chat',
 				value: 'unarchiveChat',
 				description: 'Unarchive a chat',
@@ -89,7 +101,7 @@ export const chatFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['chat'],
-				operation: ['getChat', 'archiveChat', 'deleteChat', 'muteChat', 'unmuteChat', 'pinChat', 'clearChat', 'getAllMessagesInChat'],
+				operation: ['getChat', 'archiveChat', 'deleteChat', 'muteChat', 'unmuteChat', 'pinChat', 'clearChat', 'getAllMessagesInChat', 'setChatState'],
 			},
 		},
 
@@ -107,6 +119,33 @@ export const chatFields: INodeProperties[] = [
 			},
 		},
 		description: 'Duration in minutes to mute (0 = forever)',
+	},
+	{
+		displayName: 'Chat State',
+		name: 'chatState',
+		type: 'options',
+		default: 0,
+		displayOptions: {
+			show: {
+				resource: ['chat'],
+				operation: ['setChatState'],
+			},
+		},
+		options: [
+			{
+				name: 'Typing',
+				value: 0,
+			},
+			{
+				name: 'Recording',
+				value: 1,
+			},
+			{
+				name: 'Paused',
+				value: 2,
+			},
+		],
+		description: 'The state to set',
 	},
 ];
 
@@ -225,6 +264,22 @@ export async function chatOperations(
 			const response = await openwaApiRequest.call(this, 'POST', '/markAllRead');
 
 			return response;
+		}
+
+		case 'clearAllChats': {
+			const response = await openwaApiRequest.call(this, 'POST', '/clearAllChats');
+
+			return response;
+		}
+
+		case 'setChatState': {
+			const chatId = this.getNodeParameter('chatId', itemIndex) as string;
+			const chatState = this.getNodeParameter('chatState', itemIndex) as number;
+
+			const response = await openwaApiRequest.call(this, 'POST', '/setChatState', {
+				chatId,
+				chatState,
+			});
 
 			return response;
 		}

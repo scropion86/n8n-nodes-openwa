@@ -8,6 +8,7 @@ const Group_1 = require("./operations/Group");
 const Contact_1 = require("./operations/Contact");
 const Status_1 = require("./operations/Status");
 const Webhook_1 = require("./operations/Webhook");
+const System_1 = require("./operations/System");
 class Openwa {
     constructor() {
         this.description = {
@@ -62,6 +63,11 @@ class Openwa {
                             description: 'Manage status updates',
                         },
                         {
+                            name: 'System',
+                            value: 'system',
+                            description: 'System operations',
+                        },
+                        {
                             name: 'Webhook',
                             value: 'webhook',
                             description: 'Manage webhooks',
@@ -75,6 +81,7 @@ class Openwa {
                 ...Contact_1.contactFields,
                 ...Status_1.statusFields,
                 ...Webhook_1.webhookFields,
+                ...System_1.systemFields,
             ],
             usableAsTool: true,
         };
@@ -104,6 +111,9 @@ class Openwa {
                 }
                 else if (resource === 'webhook') {
                     operationResult = await Webhook_1.webhookOperations.call(this, operation, i);
+                }
+                else if (resource === 'system') {
+                    operationResult = await System_1.systemOperations.call(this, operation, i);
                 }
                 else {
                     throw new n8n_workflow_1.NodeOperationError(this.getNode(), `Resource "${resource}" is not known`);
