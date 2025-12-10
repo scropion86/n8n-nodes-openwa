@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-openwa",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "n8n community nodes for the Openwa WhatsApp API - send messages, manage chats, groups, contacts, statuses and webhooks.",
   "license": "MIT",
   "homepage": "",
