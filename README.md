@@ -29,6 +29,7 @@ Quick links
 
 *   Openwa ([official documentation](https://docs.openwa.dev/)):
 *   Open-wa GitHub ([wa-automate-nodejs](https://github.com/open-wa/wa-automate-nodejs))
+*   NPM URL ([NPM](https://www.npmjs.com/package/n8n-nodes-openwa))
 
 How to use
 
