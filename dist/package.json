@@ -1,6 +1,6 @@
 {
     "name": "n8n-nodes-openwa",
-    "version": "0.1.9",
+    "version": "1.0.0",
     "description": "n8n community nodes for the Openwa WhatsApp API - send messages, manage chats, groups, contacts, statuses and webhooks.",
     "license": "MIT",
     "homepage": "",
@@ -34,7 +34,8 @@
             "dist/credentials/OpenwaApi.credentials.js"
         ],
         "nodes": [
-            "dist/nodes/Openwa/Openwa.node.js"
+            "dist/nodes/Openwa/Openwa.node.js",
+            "dist/nodes/Openwa/OpenwaTrigger.node.js"
         ]
     },
     "devDependencies": {
@@ -46,5 +47,8 @@
     },
     "peerDependencies": {
         "n8n-workflow": "*"
+    },
+    "dependencies": {
+        "n8n-nodes-openwa": "^1.0.0"
     }
 }
